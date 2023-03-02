@@ -87,5 +87,7 @@ public class Program{
             WindDirection = wDirection;
             Time = DateTime.Now.ToString("G"); // dd.mm.yyyy hh.mm.ss
         }
+        
+        public Data() { } // for deserialization
     }
 }
