@@ -40,9 +40,6 @@ public class Program
 
         if (msg.Contains('$') && !RecMsg.Contains('$'))
         {
-            /*int amount = new Regex(@"\$").Matches(msg).Count;
-            if (amount > 1)*/
-
             int startIndex = msg.IndexOf("$");
             RecMsg = msg[startIndex..];
         }
@@ -56,7 +53,6 @@ public class Program
 
         if (matchCollection.Count > 0)
         {
-
             foreach (Match match in matchCollection)
             {
                 ParseFinalStringAndSerialize(match.ToString());
