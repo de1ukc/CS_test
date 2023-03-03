@@ -160,5 +160,17 @@
     "WindSpeed": 44.44,
     "WindDirection": 44.44,
     "Time": "03.03.2023 22:43:25"
+  },
+  {
+    "Name": "WMT700",
+    "WindSpeed": 11.33,
+    "WindDirection": 44.77,
+    "Time": "03.03.2023 22:50:58"
+  },
+  {
+    "Name": "WMT700",
+    "WindSpeed": 1551.33,
+    "WindDirection": 55.77,
+    "Time": "03.03.2023 22:51:43"
   }
 ]
