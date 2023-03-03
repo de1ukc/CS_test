@@ -48,7 +48,7 @@ namespace MeteoTest
         [Fact]
         public void Test4()
         {
-            Program.MessageHandling("%!¹;%:$11.");
+            Program.MessageHandling("%!¹;%:$77.");
             Program.MessageHandling("33");
             Program.MessageHandling(",44.77+_)(*?:");
 
@@ -86,18 +86,30 @@ namespace MeteoTest
         [Fact]
         public void Test9()
         {
-            Program.MessageHandling("$11.33,44.77$11.33,44.77");
+            Program.MessageHandling("$22.33,44.77$11.33,44.77$12.42,");
+            Program.MessageHandling("15.22");
 
             Assert.Equal("$11.33,44.77", Program.RecMsg);
             Program.RecMsg = "";
         }
 
         [Fact]
-        public void Test8()
+        public void Test10()
         {
-            Program.ReadFromFile();
+            Program.MessageHandling("$11.33,44.77$11.33,44.77");
+            Program.MessageHandling("15.22");
+
+            Assert.Equal("$11.33,44.77", Program.RecMsg);
+            Program.RecMsg = "";
         }
 
+        [Fact]
+        public void Test11()
+        {
+            Program.MessageHandling("$11.11,11.11$22.22,22.22$44.44,44.44");
 
+            Assert.Equal("$11.33,44.77", Program.RecMsg);
+            Program.RecMsg = "";
+        }
     }
 }

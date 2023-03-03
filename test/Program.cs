@@ -4,8 +4,8 @@ using System.Text.RegularExpressions;
 
 public class Program
 {
-
     public static string RecMsg = "";
+    private const string pattern = @"\$(\d+)\.(\d\d?),(\d+)\.(\d\d?)";
     public static int Main()
     {
         SerialPort mySerialPort = new SerialPort("COM4");
@@ -27,11 +27,17 @@ public class Program
         return 0;
     }
 
+    private static void DataReceivedHandler(object sender, SerialDataReceivedEventArgs e)
+    {
+        SerialPort sp = (SerialPort)sender;
+        string indata = sp.ReadExisting();
+
+        MessageHandling(indata);
+    }
+
     public static void MessageHandling(string msg)
     {
-        /*if (String.IsNullOrEmpty(msg))
-            return;
-*/
+
         if (msg.Contains('$') && !RecMsg.Contains('$'))
         {
             /*int amount = new Regex(@"\$").Matches(msg).Count;
@@ -45,7 +51,6 @@ public class Program
             RecMsg += msg;
         }
 
-        string pattern = @"^\$(\d+)\.(\d\d?),(\d+)\.(\d\d?)";
         Regex rx = new Regex(pattern, RegexOptions.Compiled);
         MatchCollection matchCollection = rx.Matches(RecMsg);
 
@@ -72,15 +77,6 @@ public class Program
         RecMsg = RecMsg.Remove(RecMsg.IndexOf(match), match.Length);
     }
 
-
-    private static void DataReceivedHandler(object sender, SerialDataReceivedEventArgs e)
-    {
-        SerialPort sp = (SerialPort)sender;
-        string indata = sp.ReadExisting();
-
-        MessageHandling(indata);
-    }
-
     public static void WriteToFile(double WindSpeed, double WinDirection)
     {
         Data dt = new Data(WindSpeed, WinDirection);
@@ -89,9 +85,8 @@ public class Program
 
         lst.Add(dt);
 
-        string dateToJson = "{" + JsonSerializer.Serialize<List<Data>>(lst) + "}";
-
-
+        //string dateToJson = "{" + JsonSerializer.Serialize<List<Data>>(lst) + "}";
+        string dateToJson = JsonSerializer.Serialize<List<Data>>(lst);
 
         using (StreamWriter sw = new("Meteo.json", false))
         {
@@ -108,15 +103,13 @@ public class Program
             string lst = sr.ReadToEnd();
 
             var indexes = (lst.IndexOf('['), lst.IndexOf("]") + 1);
-            if (indexes.Item1 > 0 && indexes.Item2 > 0)
+            if (indexes.Item1 >= 0 && indexes.Item2 >= 0)
             {
                 lst = lst[indexes.Item1..indexes.Item2];
 
                 jsonStrList = JsonSerializer.Deserialize<List<Data>>(lst);
             }
-
         }
-
         return jsonStrList;
     }
 
