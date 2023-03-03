@@ -34,12 +34,16 @@ public class Program
 */
         if (msg.Contains('$') && !RecMsg.Contains('$'))
         {
+            /*int amount = new Regex(@"\$").Matches(msg).Count;
+            if (amount > 1)*/
+
             int startIndex = msg.IndexOf("$");
             RecMsg = msg[startIndex..];
-            return;
         }
-
-        RecMsg += msg;
+        else
+        {
+            RecMsg += msg;
+        }
 
         string pattern = @"^\$(\d+)\.(\d\d?),(\d+)\.(\d\d?)";
         Regex rx = new Regex(pattern, RegexOptions.Compiled);
@@ -47,15 +51,17 @@ public class Program
 
         if (matchCollection.Count > 0)
         {
-            RecMsg = matchCollection.First().Value;
 
-            ParseFinalStringAndSerialize();
+            foreach (Match match in matchCollection)
+            {
+                ParseFinalStringAndSerialize(match.ToString());
+            }
         }
     }
 
-    public static void ParseFinalStringAndSerialize()
+    public static void ParseFinalStringAndSerialize(string match)
     {
-        List<string> data = RecMsg.Replace("$", "").Split(',').ToList();
+        List<string> data = match.Replace("$", "").Split(',').ToList();
 
         double windSpeed = double.Parse(data[0], System.Globalization.CultureInfo.InvariantCulture);
 
@@ -63,7 +69,7 @@ public class Program
 
         WriteToFile(windSpeed, winDirection);
 
-        RecMsg = "";
+        RecMsg = RecMsg.Remove(RecMsg.IndexOf(match), match.Length);
     }
 
 
@@ -77,25 +83,41 @@ public class Program
 
     public static void WriteToFile(double WindSpeed, double WinDirection)
     {
-        using (StreamWriter sw = File.AppendText("Meteo.json"))
+        Data dt = new Data(WindSpeed, WinDirection);
+
+        List<Data> lst = ReadFromFile();
+
+        lst.Add(dt);
+
+        string dateToJson = "{" + JsonSerializer.Serialize<List<Data>>(lst) + "}";
+
+
+
+        using (StreamWriter sw = new("Meteo.json", false))
         {
-            Data dt = new Data(WindSpeed, WinDirection);
-
-            string dateToJson = JsonSerializer.Serialize<Data>(dt);
-
-            sw.WriteLine(dateToJson);
+            sw.Write(dateToJson);
         }
     }
 
-    public static bool CheckData(string indata)
+    public static List<Data> ReadFromFile()
     {
-        string pattern = @"^\$(\d+)\.(\d+),(\d+)\.(\d+)";
-        if (Regex.IsMatch(indata, pattern))
+        var jsonStrList = new List<Data>();
+
+        using (StreamReader sr = new("Meteo.json"))
         {
-            return true;
+            string lst = sr.ReadToEnd();
+
+            var indexes = (lst.IndexOf('['), lst.IndexOf("]") + 1);
+            if (indexes.Item1 > 0 && indexes.Item2 > 0)
+            {
+                lst = lst[indexes.Item1..indexes.Item2];
+
+                jsonStrList = JsonSerializer.Deserialize<List<Data>>(lst);
+            }
+
         }
 
-        return false;
+        return jsonStrList;
     }
 
     [Serializable]

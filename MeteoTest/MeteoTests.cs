@@ -64,5 +64,40 @@ namespace MeteoTest
             Assert.Equal("", Program.RecMsg);
             Program.RecMsg = "";
         }
+
+        [Fact]
+        public void Test6()
+        {
+            Program.MessageHandling("$11.33,44.77$123.45,67.8");
+
+            Assert.Equal("", Program.RecMsg);
+            Program.RecMsg = "";
+        }
+
+        [Fact]
+        public void Test7()
+        {
+            Program.MessageHandling("$11.33,44.77");
+
+            Assert.Equal("$11.33,44.77", Program.RecMsg);
+            Program.RecMsg = "";
+        }
+
+        [Fact]
+        public void Test9()
+        {
+            Program.MessageHandling("$11.33,44.77$11.33,44.77");
+
+            Assert.Equal("$11.33,44.77", Program.RecMsg);
+            Program.RecMsg = "";
+        }
+
+        [Fact]
+        public void Test8()
+        {
+            Program.ReadFromFile();
+        }
+
+
     }
 }
