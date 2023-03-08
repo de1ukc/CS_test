@@ -1,6 +1,8 @@
+using MeteoProj;
+
 namespace MeteoTest
 {
-    public class MeteoTests // для тестов отключить вызов  WriteToFile в вызове Парса и закомментить зануление строки
+    public class MeteoTests // These tests do not necessarily have to be passed successfully
     {
         [Fact]
         public void Test1()
