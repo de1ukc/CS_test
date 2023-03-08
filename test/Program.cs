@@ -1,8 +1,4 @@
-﻿using System.IO.Ports;
-using System.Text.Json;
-using System.Text.RegularExpressions;
-
-public class Program
+﻿public class Program
 {
     public static string RecMsg = "";
     private const string pattern = @"\$(\d+)\.(\d\d?),(\d+)\.(\d\d?)";
@@ -32,7 +28,14 @@ public class Program
         SerialPort sp = (SerialPort)sender;
         string indata = sp.ReadExisting();
 
-        MessageHandling(indata);
+        try
+        {
+            MessageHandling(indata);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e.ToString());
+        }
     }
 
     public static void MessageHandling(string msg)
