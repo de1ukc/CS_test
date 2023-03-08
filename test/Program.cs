@@ -2,6 +2,7 @@
 {
     public static string RecMsg = "";
     private const string pattern = @"\$(\d+)\.(\d\d?),(\d+)\.(\d\d?)";
+
     public static int Main()
     {
         SerialPort mySerialPort = new SerialPort("COM4");
@@ -40,7 +41,6 @@
 
     public static void MessageHandling(string msg)
     {
-
         if (msg.Contains('$') && !RecMsg.Contains('$'))
         {
             int startIndex = msg.IndexOf("$");
